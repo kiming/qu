@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/css/bootstrap.min.css' />
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/checkquestion.js"></script>
+  </head>
+
+  <body>
+    <div id="modal" class="modal hide fade">
+      <div class="modal-header">
+        <a class="close" data-dismiss="modal" >&times;</a>
+        <h3>提示</h3>
+      </div>
+      <div class="modal-body">
+        <p id="modal_msg"></p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" >关闭</a>
+      </div>
+    </div>
+    <table class="table table-striped">
+      <thead>
+      	<tr>
+      	  <th>问题描述</th>
+      	  <th>正确答案</th>
+      	  <th>错误答案1</th>
+      	  <th>错误答案2</th>
+      	  <th>错误答案3</th>
+      	  <th>操作</th>
+      	</tr>
+      </thead>
+
+      <tbody>
+      <%
+
+      for (var i in array) {
+      	var entry = array[i];
+      %>
+      	<tr>
+      	  <td><%=entry.q %></td>
+      	  <td><%=(entry.a)[0] %></td>
+      	  <td><%=(entry.a)[1] %></td>
+      	  <td><%=(entry.a)[2] %></td>
+      	  <td><%=(entry.a)[3] %></td>
+      	  <td>
+      	  	<button class="btn btn-primary btn-small" onclick="approve(<%=entry.id%>)">通过</button>
+      	  	<button class="btn btn-small" onclick="reject(<%=entry.id%>)">退回</button>
+      	  </td>
+      	</tr>
+      <%
+  	  }
+      %>
+      <!--
+      	<tr>
+      	  <td>广安市是哪个省的城市？</td>
+      	  <td>四川</td>
+      	  <td>江西</td>
+      	  <td>安徽</td>
+      	  <td>福建</td>
+      	  <td>
+      	  	<button class="btn btn-primary btn-small" href="#">通过</button>
+      	  	<button class="btn btn-small" href="#">退回</button>
+      	  </td>
+      	</tr>
+      	<tr>
+      	  <td>《离开地球表面》是哪个乐队的歌曲？</td>
+      	  <td>五月天</td>
+      	  <td>BEYOND</td>
+      	  <td>信乐团</td>
+      	  <td>飞儿乐团</td>
+      	  <td>
+      	  	<button class="btn btn-primary btn-small" href="#">通过</button>
+      	  	<button class="btn btn-small" href="#">退回</button>
+      	  </td>
+      	</tr>
+      	<tr>
+      	  <td>若某行业中许多生产者生产一种标准化产品，我们可以估计到其中任何一个生产者的需求将是</td>
+      	  <td>缺乏弹性</td>
+      	  <td>毫无弹性</td>
+      	  <td>富有弹性</td>
+      	  <td>有单元弹性</td>
+      	  <td>
+      	  	<button class="btn btn-primary btn-small" href="#">通过</button>
+      	  	<button class="btn btn-small" href="#">退回</button>
+      	  </td>
+      	</tr>-->
+      </tbody>
+    </table>
+  </body>
+</html>
