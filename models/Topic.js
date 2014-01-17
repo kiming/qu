@@ -1,14 +1,20 @@
 
 var topic_service = require("../services/topic_service");
 var indices_service = require("../services/indices_service");
+var categories = require("../config/category").data;
 
 function Topic(topic) {
 	this.n = topic.name;//话题的文字说明
 	this.id;
+	this.c;//category
 	//this.u = topic.user;//是由谁提出的？
 };
 
 module.exports = Topic;
+
+Topic.getCateList = function() {
+	return categories;
+};
 
 Topic.prototype.save = function(callback) {
 	var topic = {

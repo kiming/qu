@@ -1,6 +1,7 @@
 
 var Question = require("../models/Question");
 var Topic = require("../models/Topic");
+var User = require("../models/User");
 
 module.exports = function(app) {
 	app.get('/', function(req, res) {
@@ -66,6 +67,8 @@ module.exports = function(app) {
 		});
 	});
 
+	
+
 	app.get('/topic/list', function(req, res) {
 		Topic.getAllChecked(function(err, array) {
 			if (err)
@@ -101,10 +104,49 @@ module.exports = function(app) {
 	app.get('/topic/reject', function(req, res) {
 		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
 		var id = parseInt(req.query.id);
-		Topic.approve(id, function(err, flag) {
+		Topic.reject(id, function(err, flag) {
 			if (err)
 				return res.end(JSON.stringify({f: 0, e: err}));
-			return res.end(JSON.string({f: 1, m: '操作成功！'}));
+			return res.end(JSON.stringify({f: 1, m: '操作成功！'}));
+		});
+	});
+
+	app.get('/user/login', function(req, res) {
+		return res.render('login');
+	});
+
+	app.post('/user/login', function(req, res) {
+		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
+		var u = {
+			m: req.body.m,
+			p: require('crypto').createHash('md5').update(req.body.p).digest('hex')
+		};
+		//console.log(JSON.stringify(u));
+		User.checkLogin(u, function(err, user) {
+			if (err)
+				return res.end(JSON.stringify({f: 0, e: err}));
+			req.session.user = user;
+			return res.end(JSON.stringify({f: 1, m: '登录成功！'}));
+		});
+	});
+
+	app.get('/user/reg', function(req, res) {
+		return res.render('register');
+	});
+
+	app.post('/user/reg', function(req, res) {
+		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
+		var user = new User({
+			m: req.body.m,
+			p: require('crypto').createHash('md5').update(req.body.p).digest('hex'),
+			n: req.body.n
+		});
+		user.save(function(err, newuser) {
+			if (err)
+				return res.end(JSON.stringify({f: 0, e: err}));
+			newuser.p = null;
+			req.session.user = newuser;
+			return res.end(JSON.stringify({f: 1, m: '注册成功'}));
 		});
 	});
 };
