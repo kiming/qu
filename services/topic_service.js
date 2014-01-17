@@ -68,3 +68,15 @@ topic_service.getAllTopics = function(coll, callback) {
 		});
 	});
 };
+
+topic_service.getTopicsByCate = function(cateid, callback) {
+	db.collection('topics', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.find({c: cateid}, {_id: 0, c: 0}).toArray(function(err, array){
+			if (err)
+				return callback(err);
+			return callback(null, array);
+		});
+	});
+};

@@ -6,8 +6,8 @@ var categories = require("../config/category").data;
 function Topic(topic) {
 	this.n = topic.name;//话题的文字说明
 	this.id;
-	this.c;//category
-	//this.u = topic.user;//是由谁提出的？
+	this.c = topic.cate;
+	this.u = topic.user;//是由谁提出的？
 };
 
 module.exports = Topic;
@@ -18,8 +18,9 @@ Topic.getCateList = function() {
 
 Topic.prototype.save = function(callback) {
 	var topic = {
-		n: this.n
-		//u: this.u;
+		n: this.n,
+		u: this.u,
+		c: this.c
 	}
 	indices_service.returnAndAdd('utopic', function(err, value) {
 		if (err)
@@ -46,6 +47,7 @@ Topic.approve = function(id, callback) {
 				return callback({i: 3, m: '删除失败，可能已处理'});
 			var topic = {
 				n: ut.n,
+				c: ut.c
 			};
 			indices_service.returnAndAdd('topic', function(err, value) {
 				if (err)
@@ -84,6 +86,11 @@ Topic.getAllUnchecked = function(callback) {
 	topic_service.getAllTopics('utopics', function(err, array) {
 		if (err)
 			return callback(err);
+		for (var i in array) {
+			var entry = array[i];
+			var name = getCateNameByID(entry.c);
+			entry.cn = name;
+		}
 		return callback(null, array);
 	});
 };
@@ -94,4 +101,23 @@ Topic.getAllChecked = function(callback) {
 			return callback(err);
 		return callback(null, array);
 	});
+};
+
+Topic.getTopicsOfCate = function(cateid, callback) {
+	if (isNaN(cateid))
+		return callback({i: 1, m: '不合法的分类id'});
+	topic_service.getTopicsByCate(parseInt(cateid), function(err, array) {
+		if (err)
+			return callback({i: 0, m: '连接错误'});
+		return callback(null, array);
+	});
+};
+
+var getCateNameByID = function(id) {
+	for (var i in categories) {
+		var entry = categories[i];
+		if (entry.i == id)
+			return entry.n;
+	}
+	return "不合法";
 };

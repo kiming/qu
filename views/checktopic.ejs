@@ -23,7 +23,8 @@
       <thead>
       	<tr>
       	  <th>待审核话题</th>
-      	  <th>提出用户</th>
+          <th>话题所属分类</th>
+      	  <th>提出用户id</th>
       	  <th>操作</th>
       	</tr>
       </thead>
@@ -36,7 +37,8 @@
       %>
       	<tr>
       	  <td><%=entry.n %></td>
-      	  <td>尚未实现</td>
+          <td><%=entry.cn %></td>
+      	  <td><%=entry.u %></td>
       	  <td>
       	  	<button class="btn btn-primary btn-small" onclick="approve(<%=entry.id%>)">通过</button>
       	  	<button class="btn btn-small" onclick="reject(<%=entry.id%>)">退回</button>

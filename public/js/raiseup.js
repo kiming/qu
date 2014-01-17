@@ -1,20 +1,11 @@
 $(document).ready(function() {
-	$.get('/topic/list', function(data) {
+	$.get('/topic/cates', function(data) {
 		var obj = JSON.parse(data);
-		if (obj.f == 0) {
-			$("#modal_msg").html('话题载入未成功，请重试');
-			$("#modal").modal({
-				backdrop:true,
-    			keyboard:true,
-    			show:true
-			});
-		}
-		else if (obj.f == 1) {
-			var array = obj.a;
-			for (var i in array) {
-				var entry = array[i];
-				$('#select01').append('<option value="' + entry.id + '">' + entry.n + '</option>');
-			}
+		for (var i in obj) {
+			var entry = obj[i];
+			var str = '<option value="' + entry.i + '">' + entry.n + '</option>';
+			$('#cates1').append(str);
+			$('#cates2').append(str);
 		}
 	});
 	$('#ques').focus(function() {
@@ -24,6 +15,27 @@ $(document).ready(function() {
 		$('#ques').blur(function() {
 		$('#ques').removeClass('input-xlarge');
 		$('#ques').addClass('input');
+	});
+	$('#cates1').change(function() {
+		$.get('/topic/list?id=' + $('#cates1').val(), function(result) {
+			var obj = JSON.parse(result);
+			if (obj.f==0) {
+				$("#modal_msg").html(obj.e.m);
+				$("#modal").modal({
+					backdrop:true,
+    				keyboard:true,
+    				show:true
+				});
+			}
+			else if (obj.f == 1) {
+				var array = obj.a;
+				resetTopicSelect();
+				for (var i in array) {
+					var entry = array[i];
+					$('#topic').append('<option value="' + entry.id + '">' + entry.n + '</option>');
+				}
+			}
+		});
 	});
 });
 
@@ -51,7 +63,8 @@ var handinques = function() {
 
 var handintype = function() {
 	$.post('/topic/upload', {
-		n: $('#newkind').val()
+		n: $('#newkind').val(),
+		c: $('#cates2').val()
 	}, function(data) {
 		var obj = JSON.parse(data);
 		if (obj.f == 1) {
@@ -67,3 +80,19 @@ var handintype = function() {
 		});
 	});
 };
+
+var resetTopicSelect = function() {
+	$('#topic').empty();
+	$('#topic').append('<option value="0">请选择</option>');
+};
+
+/*
+		if (obj.f == 0) {
+			$("#modal_msg").html('话题载入未成功，请重试');
+			$("#modal").modal({
+				backdrop:true,
+    			keyboard:true,
+    			show:true
+			});
+		}
+*/

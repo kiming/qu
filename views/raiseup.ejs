@@ -55,11 +55,20 @@
           </div>
         </div>
         <div class="control-group">
-          <label class="control-label" for="select01">分类选择</label>
+          <label class="control-label" for="cates1">分类选择</label>
           <div class="controls">
-            <select id="select01" name="c">
+            <select id="cates1" name="c">
               <option value='0'>请选择</option>
             </select>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="topic">话题选择</label>
+          <div class="controls">
+            <select id="topic" name="t">
+              <option value='0'>请选择</option>
+            </select>
+            <button class='btn'>手动输入话题</button>
           </div>
         </div>
         <div class="form-actions">
@@ -70,11 +79,19 @@
     </div>
     <div class="form-horizontal form-inline">
       <fieldset>
-        <legend>增加分类</legend>
+        <legend>增加话题</legend>
         <div class="control-group">
-          <label class="control-label" for="newkind">分类</label>
+          <label class="control-label" for="cates2">分类选择</label>
           <div class="controls">
-            <input type="text" class="input" id="newkind" placeholder="新的分类"><button class="btn btn-primary" onclick="handintype()">提交</button>
+            <select id="cates2" name="c">
+              <option value='0'>请选择</option>
+            </select>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="newkind">话题</label>
+          <div class="controls">
+            <input type="text" class="input" id="newkind" placeholder="新的话题"><button class="btn btn-primary" onclick="handintype()">提交</button>
             <p class="help-block">请不要与已有分类相同</p>
           </div>
         </div>

@@ -67,21 +67,30 @@ module.exports = function(app) {
 		});
 	});
 
-	
+	app.get('/topic/cates', function(req, res) {
+		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
+		return res.end(JSON.stringify(Topic.getCateList()));
+	});
 
 	app.get('/topic/list', function(req, res) {
-		Topic.getAllChecked(function(err, array) {
+		/*Topic.getAllChecked(function(err, array) {
 			if (err)
 				return res.end(JSON.stringify({f: 0, m: '出错，请重试'}));
 			return res.end(JSON.stringify({f: 1, a: array}));
+		});*/
+		Topic.getTopicsOfCate(req.query.id, function(err, array) {
+			if (err)
+				return res.end(JSON.stringify({f: 0, e: err}));
+			res.end(JSON.stringify({f: 1, a: array}));
 		});
 	});
 
 	app.post('/topic/upload', function(req, res) {
 		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
 		var topic = new Topic({
-			name: req.body.n
-			//user: 
+			name: req.body.n,
+			user: req.session.user.id,
+			cate: parseInt(req.body.c)
 		});
 
 		topic.save(function(err, ut) {
