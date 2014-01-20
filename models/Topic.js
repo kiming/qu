@@ -1,5 +1,6 @@
 
 var topic_service = require("../services/topic_service");
+var question_service = require("../services/question_service");
 var indices_service = require("../services/indices_service");
 var categories = require("../config/category").data;
 
@@ -120,4 +121,27 @@ var getCateNameByID = function(id) {
 			return entry.n;
 	}
 	return "不合法";
+};
+Topic.getCateNameByID = getCateNameByID;
+
+Topic.getTopicNameByID = function(id, callback) {
+	topic_service.getTopicById(id, function(err, entry) {
+		if (err)
+			callback(err);
+		callback(null, entry.n);
+	});
+};
+
+Topic.addTopicByAdmin = function(cateid, name, callback) {
+	topic_service.getTopicOfSameName(cateid, name, function(err, entry) {
+		if (err)
+			return callback({i: 0, m: '连接错误'});
+		if (entry)
+			return callback({i: 1, m: '已经存在该话题了，无需再添加'});
+		topic_service.deleteUncheckedTopicByName(name, function(err, topic) {
+			if (err)
+				return callback({i: 2, m: '连接错误'});
+			
+		});
+	});
 };

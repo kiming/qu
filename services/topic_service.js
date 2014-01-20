@@ -57,6 +57,18 @@ topic_service.deleteUncheckedTopic = function(id, callback) {
 	});
 };
 
+topic_service.deleteUncheckedTopicByName = function(name, callback) {
+	db.collection('utopics', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.remove({n: name}, function(err, count) {
+			if (err)
+				return callback(err);
+			return callback(null);
+		});
+	});
+};
+
 topic_service.getAllTopics = function(coll, callback) {
 	db.collection(coll, function(err, collection) {
 		if (err)
@@ -77,6 +89,30 @@ topic_service.getTopicsByCate = function(cateid, callback) {
 			if (err)
 				return callback(err);
 			return callback(null, array);
+		});
+	});
+};
+
+topic_service.getTopicById = function(id, callback) {
+	db.collection('topics', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.findOne({id: id}, {_id: 0}, function(err, entry) {
+			if (err)
+				return callback(err);
+			return callback(null, entry);
+		});
+	});
+};
+
+topic_service.getTopicOfSameName = function(cateid, name, callback) {
+	db.collection('topics', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.findOne({c: cateid, n: name}, function(err, entry) {
+			if (err)
+				return callback(err);
+			return callback(null, entry);
 		});
 	});
 };

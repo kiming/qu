@@ -22,7 +22,10 @@ module.exports = function(app) {
 		];
 		var question = new Question({
 			answers: answers,
-			topicid: parseInt(req.body.c),
+			topicid: parseInt(req.body.tp),
+			topicstr: req.body.ts,
+			mode: req.body.m,
+			cate: parseInt(req.body.c),
 			description: req.body.q
 		});
 		//console.log(JSON.stringify(question));
@@ -38,6 +41,8 @@ module.exports = function(app) {
 		Question.getAllUnchecked(function(err, array) {
 			if (err)
 				return res.end("错误");
+			//console.log(JSON.stringify(array));
+			//return res.end(JSON.stringify(array));
 			return res.render('checkquestion', {array: array});
 		});
 		//return res.render('checkquestion');
@@ -56,6 +61,15 @@ module.exports = function(app) {
 			if (err)
 				return res.end(JSON.stringify({f: 0, e: err}));
 			return res.end(JSON.stringify({f: 1}));
+		});
+	});
+
+	app.get('/question/getone', function(req, res) {
+		var id = parseInt(req.query.id);
+		Question.getQuestionById(id, function(err, entry) {
+			if (err)
+				return res.end(JSON.stringify({f: 0, e: err}));
+			return res.end(JSON.stringify({f: 1, q: entry}));
 		});
 	});
 

@@ -12,7 +12,7 @@ $(document).ready(function() {
 		$('#ques').removeClass('input');
 		$('#ques').addClass('input-xlarge');
 	});
-		$('#ques').blur(function() {
+	$('#ques').blur(function() {
 		$('#ques').removeClass('input-xlarge');
 		$('#ques').addClass('input');
 	});
@@ -37,6 +37,21 @@ $(document).ready(function() {
 			}
 		});
 	});
+	$('#topics').css('display', 'none');
+	$('#inputmode').click(function() {
+		if (parseInt($('#mode').val())==0) {
+			$('#mode').val(1);
+			$('#inputmode').text('列表选择');
+			$('#topics').css('display', 'inline');
+			$('#topic').css('display', 'none');
+		}
+		else {
+			$('#mode').val(0);
+			$('#inputmode').text('手动输入');
+			$('#topic').css('display', 'inline');
+			$('#topics').css('display', 'none');
+		}
+	});
 });
 
 var handinques = function() {
@@ -45,8 +60,11 @@ var handinques = function() {
 		a2: $('#fansa').val(),
 		a3: $('#fansb').val(),
 		a4: $('#fansc').val(),
-		c: $('#select01').val(),
-		q: $('#ques').val()
+		c: $('#cates1').val(),
+		tp: $('#topic').val(),
+		ts: $('#topics').val(),
+		q: $('#ques').val(),
+		m: $('#mode').val()
 	}, function(data) {
 		var obj = JSON.parse(data);
 		if (obj.f == 0)

@@ -25,7 +25,7 @@ question_service.getAllQuestion = function(callback) {
 	db.collection('questions', function(err, collection) {
 		if (err)
 			return callback(err);
-		collection.find({c: {$lt: 0}}, {_id: 0}).toArray(function(err, array) {
+		collection.find({c: {$gte: 0}}, {_id: 0}).toArray(function(err, array) {
 			if (err)
 				return callback(err);
 			return callback(null, array);
@@ -45,6 +45,18 @@ question_service.getQuestionById = function(id, coll, callback) {
 	});
 };
 
+question_service.getUncheckedQuestionsByTopicName = function(new_topicid, cateid, name, callback) {
+	db.collection('questions', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.update({m: 1, c: cateid, ts: name}, {$set: {m: 0, tp: new_topicid}}, function(err, count){
+			if (err)
+				return callback(err);
+			return callback(null);
+		});
+	});
+};
+
 question_service.deleteQuestion = function(id, coll, callback) {
 	db.collection(coll, function(err, collection) {
 		if (err)
@@ -53,6 +65,6 @@ question_service.deleteQuestion = function(id, coll, callback) {
 			if (err)
 				return callback(err);
 			return callback(null, amount);
-		})
+		});
 	});
 };
