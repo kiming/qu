@@ -102,10 +102,9 @@ function allocate(t) {
 			}
 		}
 		$("#edit").modal({
-		backdrop:true,
-		keyboard:true,
-		show:true
+			backdrop:true,
+			keyboard:true,
+			show:true
+		});
 	});
-	});
-
-}
+};

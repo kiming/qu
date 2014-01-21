@@ -172,4 +172,18 @@ module.exports = function(app) {
 			return res.end(JSON.stringify({f: 1, m: '注册成功'}));
 		});
 	});
+
+	app.get('/admin/topic/add', function(req, res) {
+		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
+		var cateidstr = req.body.c, name = req.body.name;
+		if (isNaN(cateidstr))
+			return res.end(JSON.stringify({f: 0, e: {i: -1, m: '分类编号不合法'}}));
+		if (!name)
+			return res.end(JSON.stringify({f: 0, e: {i: -2, m: '没有输入分类名'}}));
+		Topic.addTopicByAdmin(parseInt(cateidstr), name, function(err, flag) {
+			if (err)
+				return res.end(JSON.stringify({f: 0, e: err}));
+			return res.end(JSON.stringify({f: 1, m: '添加成功'}));
+		});
+	});
 };

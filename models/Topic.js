@@ -138,10 +138,25 @@ Topic.addTopicByAdmin = function(cateid, name, callback) {
 			return callback({i: 0, m: '连接错误'});
 		if (entry)
 			return callback({i: 1, m: '已经存在该话题了，无需再添加'});
-		topic_service.deleteUncheckedTopicByName(name, function(err, topic) {
+		topic_service.deleteUncheckedTopicByName(name, function(err, count) {
 			if (err)
 				return callback({i: 2, m: '连接错误'});
-			
+			indices_service.returnAndAdd('topic', function(err, value) {
+				if (err)
+					return callback({i: 3, m: '连接错误'});
+				var topic = {
+					id: value,
+					c: cateid,
+					n: name
+				};
+				topic_service.addCheckedTopic(topic, function(err, ct) {
+					if (err)
+						return callback({i: 4, m: '连接错误'});
+					if (ct == 0)
+						return callback({i: 5, m: '添加失败'});
+					return callback(null, true);
+				});
+			});
 		});
 	});
 };
