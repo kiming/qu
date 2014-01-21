@@ -68,3 +68,27 @@ question_service.deleteQuestion = function(id, coll, callback) {
 		});
 	});
 };
+
+question_service.changeQuestionMode = function(cateid, topicstr, topicid, callback) {
+	db.collection('questions', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.update({c: cateid, ts: topicstr}, {$set: {m: 0, tp: topicid}}, function(err, ct) {
+			if (err)
+				return callback(err);
+			return callback(null, ct);
+		});
+	});
+};
+
+question_service.setTopic = function(qid, cateid, topicid, callback) {
+	db.collection('questions', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.update({id: qid}, {$set: {c: cateid, tp: topicid, m: 0}}, function(err, ct) {
+			if (err)
+				return callback(err);
+			return callback(null, ct);
+		});
+	});
+};

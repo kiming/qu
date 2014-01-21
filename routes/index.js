@@ -173,17 +173,31 @@ module.exports = function(app) {
 		});
 	});
 
-	app.get('/admin/topic/add', function(req, res) {
+	app.post('/admin/topic/add', function(req, res) {
 		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
-		var cateidstr = req.body.c, name = req.body.name;
+		var cateidstr = req.body.c, name = req.body.n, topicid = req.body.tp, mode = req.body.m, questr = req.body.q;
 		if (isNaN(cateidstr))
 			return res.end(JSON.stringify({f: 0, e: {i: -1, m: '分类编号不合法'}}));
-		if (!name)
-			return res.end(JSON.stringify({f: 0, e: {i: -2, m: '没有输入分类名'}}));
-		Topic.addTopicByAdmin(parseInt(cateidstr), name, function(err, flag) {
-			if (err)
-				return res.end(JSON.stringify({f: 0, e: err}));
-			return res.end(JSON.stringify({f: 1, m: '添加成功'}));
-		});
+//		if (!name)
+//			return res.end(JSON.stringify({f: 0, e: {i: -2, m: '没有输入分类名'}}));
+//		if (isNaN(topicid))
+//			return res.end(JSON.stringify({f: 0, e: {i: -3, m: '话题id不合法'}}));
+		if (isNaN(mode))
+			return res.end(JSON.stringify({f: 0, e: {i: -4, m: '不是正确的模式'}}));
+		if (mode == 1) {
+			Topic.addTopicByAdmin(parseInt(cateidstr), name, function(err, flag) {
+				if (err)
+					return res.end(JSON.stringify({f: 0, e: err}));
+				return res.end(JSON.stringify({f: 1, m: '添加成功'}));
+			});
+		}
+		else if (mode == 0) {
+			Topic.allocateTopicByAdmin(parseInt(questr), parseInt(cateidstr), parseInt(topicid), function(err, flag) {
+				if (err)
+					return res.end(JSON.stringify({f: 0, e: err}));
+				return res.end(JSON.stringify({f: 1, m: '添加成功'}));
+			});
+		}
+
 	});
 };

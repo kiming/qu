@@ -50,7 +50,10 @@ $(document).ready(function() {
 			$('#topics').css('display', 'none');
 		}
 	});
-
+	$('#modal').on('hidden', function () {
+		if (parseInt($('#refresh').val()) == 1)
+			location.reload();
+	});
 });
 
 function show(str) {
@@ -62,6 +65,10 @@ function show(str) {
 	});
 };
 
+function setRefreshFlag() {
+	$('#refresh').val(1);
+};
+
 function approve(t) {
 	$.get('/question/approve?id='+t, function(result) {
 		var obj = JSON.parse(result);
@@ -69,10 +76,11 @@ function approve(t) {
 			show(obj.e.m);
 		}
 		else if (obj.f == 1) {
-			location.reload();
+			setRefreshFlag();
+			show(obj.m);
 		}
 	});
-}
+};
 
 function reject(t) {
 	$.get('/question/reject?id='+t, function(result) {
@@ -81,30 +89,81 @@ function reject(t) {
 			show(obj.e.m);
 		}
 		else if (obj.f == 1) {
+			setRefreshFlag();
 			show("操作成功！");
 		}
 	});
-}
+};
 
 function allocate(t) {
-	$.get('/question/getone?id=' + t, function(result) {
-		var obj = JSON.parse(result);
+	$.get('/question/getone?id=' + t, function(result1) {
+		var obj = JSON.parse(result1);
 		if (obj.f == 0)
 			return show(obj.e.m);
 		else if (obj.f == 1) {
 			var question = obj.q;
 			$('#cates1').val(obj.q.c);
-			if (obj.q.m == 1) {
-				$('#topics').val(obj.q.ts);
-			}
-			else if (obj.q.m == 0) {
-				$('#topic').val(obj.q.tp);
-			}
+			$.get('/topic/list?id=' + $('#cates1').val(), function(result) {
+				var obj1 = JSON.parse(result);
+				if (obj1.f==0) {
+					$("#modal_msg").html(obj1.e.m);
+					$("#modal").modal({
+						backdrop:true,
+    					keyboard:true,
+    					show:true
+					});
+				}
+				else if (obj1.f == 1) {
+					var array = obj1.a;
+					resetTopicSelect();
+					for (var i in array) {
+						var entry = array[i];
+						$('#topic').append('<option value="' + entry.id + '">' + entry.n + '</option>');
+					}
+				}
+			});
+
+			$('#topics').val(obj.q.ts);
+			$('#topic').val(obj.q.tp);
 		}
+		$('#qid').val(t);
 		$("#edit").modal({
 			backdrop:true,
 			keyboard:true,
 			show:true
 		});
 	});
+};
+
+function confirm_allocate() {
+	$.post('/admin/topic/add', {
+		c: $('#cates1').val(),
+		n: $('#topics').val(),
+		tp: $('#topic').val(),
+		m: $('#mode').val(),
+		q: $('#qid').val()
+	}, function(result) {
+		var obj = JSON.parse(result);
+		if (obj.f == 0) {
+			$('#edit').modal('hide');
+			show(obj.e.m);
+		}
+			
+		else if (obj.f == 1) {
+			$("#edit").modal('hide');
+			setRefreshFlag();
+			show(obj.m);
+		}
+
+	});
+
+};
+
+var resetTopicSelect = function() {
+	$('#topic').empty();
+	$('#topic').append('<option value="0">请选择</option>');
+};
+
+var change_event = function() {
+
 };

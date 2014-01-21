@@ -154,8 +154,50 @@ Topic.addTopicByAdmin = function(cateid, name, callback) {
 						return callback({i: 4, m: '连接错误'});
 					if (ct == 0)
 						return callback({i: 5, m: '添加失败'});
-					return callback(null, true);
+					mergetopic2question(cateid, name, value, function(err, flag) {
+						if (err)
+							return callback(err);
+						return callback(null, true);
+					});
 				});
+			});
+		});
+	});
+};
+
+var mergetopic2question = function(cateid, topicstr, topicid, callback) {
+	topic_service.getTopicById(topicid, function(err, topic) {
+		if (err)
+			return callback({i: 11, m: '连接错误'});
+		if (!topic)
+			return callback({i: 12, m: '该话题不存在'});
+		question_service.changeQuestionMode(cateid, topicstr, topicid, function(err, ct) {
+			if (err)
+				return callback({i: 13, m: '连接错误'});
+			if (ct == 0)
+				return callback({i: 14, m: '修改问题时失败'});
+			return callback(null, true);
+		});
+	});
+};
+
+Topic.allocateTopicByAdmin = function(qid, cateid, topicid, callback) {
+	topic_service.getTopicById(topicid, function(err, topic) {
+		if (err)
+			return callback({i: 1, m: '连接错误'});
+		if (!topic)
+			return callback({i: 2, m: '该话题不存在'});
+		question_service.getQuestionById(qid, 'questions', function(err, question) {
+			if (err)
+				return callback({i: 3, m: '连接错误'});
+			if (!question)
+				return callback({i: 4, m: '该问题不存在'});
+			question_service.setTopic(qid, cateid, topicid, function(err, ct) {
+				if (err)
+					return callback({i: 5, m: '连接错误'});
+				if (ct == 0)
+					return callback({i: 6, m: '更新问题未成功'});
+				return callback(null, true);
 			});
 		});
 	});
