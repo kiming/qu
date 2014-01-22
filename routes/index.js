@@ -26,7 +26,8 @@ module.exports = function(app) {
 			topicstr: req.body.ts,
 			mode: req.body.m,
 			cate: parseInt(req.body.c),
-			description: req.body.q
+			description: req.body.q,
+			uid: req.session.user.id
 		});
 		//console.log(JSON.stringify(question));
 		question.save(function(err, question) {
@@ -75,7 +76,15 @@ module.exports = function(app) {
 
 	app.get('/question/mylist/unapproved', function(req, res) {
 		//用于查找用户审核没有通过的问题
-		return res.end('正在实现中');
+		//return res.end('正在实现中');
+		if (!req.session.user)
+			return res.redirect('/user/login');
+		Question.getUncheckedQuestionsByUserId(req.session.user.id, function(err, array) {
+			if (err)
+				return res.end(JSON.stringify({f: 0, e: err}));
+			return res.render('myquestions', {array: array});
+			//return res.end(array.length + '');
+		});
 	});
 
 	app.get('/topic/check', function(req, res) {

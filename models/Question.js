@@ -18,6 +18,7 @@ function Question(question) {
 	this.w;//答对数目
 	this.l;//答错数目
 	this.h;//动态难度系数
+	this.u = question.uid;//提出的用户
 };
 
 module.exports = Question;
@@ -34,7 +35,8 @@ Question.prototype.save = function(callback) {
 		i: this.i,
 		w: this.w,
 		l: this.l,
-		h: this.h
+		h: this.h,
+		u: this.u
 	};
 	if (this.m == 0)
 		dealQuestion(question, callback);
@@ -42,8 +44,11 @@ Question.prototype.save = function(callback) {
 		topic_service.getTopicByCateAndName(question.c, question.ts, function(err, topic) {
 			if (err)
 				return callback({i: 2, m: '连接错误'});
-			if (topic)
-				return callback({i: 3, m: '该话题已存在，请您手动选择'});
+			if (topic) {
+				//return callback({i: 3, m: '该话题已存在，请您手动选择'});
+				question.m = 0;
+				question.tp = topic.id;
+			}
 			dealQuestion(question, callback);
 		});
 	}
@@ -67,24 +72,7 @@ Question.getAllUnchecked = function(callback) {
 		if (err)
 			return callback(err);
 		//console.log(array.length);
-		var todo = [];
-		for (var index in array) {
-			if (array[index].m == 0)
-				todo.push(array[index]);
-			else
-				array[index].cs = Topic.getCateNameByID(array[index].c);
-		}
-		var length = todo.length - 1, i = 0;
-		todo.forEach(function(entry) {
-			entry.cs = Topic.getCateNameByID(entry.c);
-			Topic.getTopicNameByID(entry.tp, function(err, name) {					
-				if (err)
-					entry.ts = '查询失败';
-				entry.ts = name;
-				if (i++ == length)
-					callback(null, array);
-			});
-		});
+		searchTopicNames(array, callback);
 
 /*		for (var i in array) {
 			//console.log(i);
@@ -118,6 +106,7 @@ Question.approve = function(id, callback) {
 			//question.c = -question.c;
 			delete question.ts;
 			delete question.m;
+			delete question.u;
 			question_service.addQuestion(question, 'checkedQues', function(err, qe) {
 				if (err)
 					return callback({i: 4, m: '连接错误'});
@@ -161,3 +150,33 @@ Question.getQuestionById = function(id, callback) {
 		return callback(null, entry);
 	});
 };
+
+Question.getUncheckedQuestionsByUserId = function(uid, callback) {
+	question_service.getUncheckedQuestionsByUserId(uid, function(err, array) {
+		if (err)
+			return callback({i: 0, m: '连接错误'});
+		searchTopicNames(array, callback);
+	});
+};
+
+var searchTopicNames = function(array, callback) {
+	var todo = [];
+	for (var index in array) {
+		if (array[index].m == 0)
+			todo.push(array[index]);
+		else
+			array[index].cs = Topic.getCateNameByID(array[index].c);
+	}
+	var length = todo.length - 1, i = 0;
+	todo.forEach(function(entry) {
+		entry.cs = Topic.getCateNameByID(entry.c);
+		Topic.getTopicNameByID(entry.tp, function(err, name) {					
+			if (err)
+				entry.ts = '查询失败';
+			entry.ts = name;
+			if (i++ == length)
+				callback(null, array);
+		});
+	});
+};
+

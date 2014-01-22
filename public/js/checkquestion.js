@@ -58,7 +58,7 @@ function setFormMode(mode) {
 		$('#topic').css('display', 'inline');
 		$('#topics').css('display', 'none');
 	}
-}
+};
 
 function show(str) {
 	$("#modal_msg").html(str);
@@ -167,4 +167,8 @@ function confirm_allocate() {
 var resetTopicSelect = function() {
 	$('#topic').empty();
 	$('#topic').append('<option value="0">请选择</option>');
+};
+
+var rekect = function(str) {
+	show(str);
 };

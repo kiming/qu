@@ -57,6 +57,18 @@ question_service.getUncheckedQuestionsByTopicName = function(new_topicid, cateid
 	});
 };
 
+question_service.getUncheckedQuestionsByUserId = function(uid, callback) {
+	db.collection('questions', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.find({u: uid}, {_id: 0}).toArray(function(err, array) {
+			if (err)
+				return callback(err);
+			return callback(null, array);
+		});
+	});
+}
+
 question_service.deleteQuestion = function(id, coll, callback) {
 	db.collection(coll, function(err, collection) {
 		if (err)
@@ -73,9 +85,10 @@ question_service.changeQuestionMode = function(cateid, topicstr, topicid, callba
 	db.collection('questions', function(err, collection) {
 		if (err)
 			return callback(err);
-		collection.update({c: cateid, ts: topicstr}, {$set: {m: 0, tp: topicid}}, function(err, ct) {
+		collection.update({c: cateid, ts: topicstr}, {$set: {m: 0, tp: topicid}}, {multi: true}, function(err, ct) {
 			if (err)
 				return callback(err);
+			//console.log(ct);
 			return callback(null, ct);
 		});
 	});

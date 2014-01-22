@@ -23,14 +23,26 @@ Topic.prototype.save = function(callback) {
 		u: this.u,
 		c: this.c
 	}
-	indices_service.returnAndAdd('utopic', function(err, value) {
+	topic_service.getUncheckedTopicByCateAndName(topic.c, topic.n, function(err, topic0) {
 		if (err)
 			return callback({i: 0, m: '连接错误'});
-		topic.id = value;
-		topic_service.addUncheckedTopic(topic, function(err, ut) {
+		if (topic0)
+			return callback({i: 1, m: '此话题正在被审核，请稍后提交'});
+		topic_service.getTopicByCateAndName(topic.c, topic.n, function(err, topic1) {
 			if (err)
-				return callback({i:1, m: '连接错误'});
-			return callback(null);
+				return callback({i: 2, m: '连接错误'});
+			if (topic1)
+				return callback({i: 3, m: '此话题已存在，请直接选择'});
+			indices_service.returnAndAdd('utopic', function(err, value) {
+				if (err)
+					return callback({i: 0, m: '连接错误'});
+				topic.id = value;
+				topic_service.addUncheckedTopic(topic, function(err, ut) {
+					if (err)
+						return callback({i:1, m: '连接错误'});
+					return callback(null);
+				});
+			});
 		});
 	});
 };

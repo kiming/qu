@@ -106,7 +106,15 @@ topic_service.getTopicById = function(id, callback) {
 };
 
 topic_service.getTopicByCateAndName = function(cateid, name, callback) {
-	db.collection('topics', function(err, collection) {
+	getTopicByCandN('topics', cateid, name, callback);
+};
+
+topic_service.getUncheckedTopicByCateAndName = function(cateid, name, callback) {
+	getTopicByCandN('utopics', cateid, name, callback);
+};
+
+var getTopicByCandN = function(coll, cateid, name, callback) {
+	db.collection(coll, function(err, collection) {
 		if (err)
 			return callback(err);
 		collection.findOne({c: cateid, n: name}, {_id: 0}, function(err, topic) {

@@ -57,42 +57,45 @@
     </div>
     <table class="table table-striped">
       <thead>
-      	<tr>
-      	  <th>问题描述</th>
+        <tr>
+          <th>问题描述</th>
           <th>分类话题</th>
-      	  <th>正确答案</th>
-      	  <th>错误答案1</th>
-      	  <th>错误答案2</th>
-      	  <th>错误答案3</th>
-      	  <th>操作</th>
-      	</tr>
+          <th>正确答案</th>
+          <th>错误答案1</th>
+          <th>错误答案2</th>
+          <th>错误答案3</th>
+          <th>操作</th>
+        </tr>
       </thead>
 
       <tbody>
       <%
-
       for (var i in array) {
       	var entry = array[i];
       %>
       	<tr>
-      	  <td><%=entry.q %></td>
+          <td><%=entry.q %></td>
           <td><%=entry.cs + '>' + entry.ts %><% if(entry.m==1) {%>[新]<% } %></td>
-      	  <td><%=(entry.a)[0] %></td>
-      	  <td><%=(entry.a)[1] %></td>
-      	  <td><%=(entry.a)[2] %></td>
-      	  <td><%=(entry.a)[3] %></td>
-      	  <td>
-            <% if (entry.m==0) { %>
-      	  	<button class="btn btn-primary btn-small" onclick="approve(<%=entry.id %>)">通过</button>
-            <% } else { %>
-            <button class="btn btn-small btn-info" onclick="allocate(<%=entry.id %>)">分配话题</button>
-            <% } %>
-      	  	<button class="btn btn-small" onclick="reject(<%=entry.id%>)">退回</button>
-            
+          <td><%=(entry.a)[0] %></td>
+          <td><%=(entry.a)[1] %></td>
+          <td><%=(entry.a)[2] %></td>
+          <td><%=(entry.a)[3] %></td>
+          <td>
+            <div class="btn-group">
+              <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog icon-white"></i> 操作 <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <% if (entry.m==0) { %>
+                <li><a onclick="approve(<%=entry.id %>)"><i class="icon-ok"></i> 通过</a></li>
+                <% } else { %>
+                <li><a onclick="allocate(<%=entry.id %>)"><i class="icon-pencil"></i> 分配话题</a></li>
+                <% } %>
+                <li><a onclick="reject(<%=entry.id%>)"><i class="icon-ban-circle"></i> 退回</a></li>
+              </ul>
+            </div>
       	  </td>
       	</tr>
       <%
-  	  }
+      }
       %>
       <!--
       	<tr>
