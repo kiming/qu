@@ -1,5 +1,6 @@
 
 var question_service = require("../services/question_service");
+var topic_service = require("../services/topic_service");
 var indices_service = require("../services/indices_service");
 var Topic = require("./Topic");
 
@@ -35,11 +36,24 @@ Question.prototype.save = function(callback) {
 		l: this.l,
 		h: this.h
 	};
+	if (this.m == 0)
+		dealQuestion(question, callback);
+	else if (this.m == 1) {
+		topic_service.getTopicByCateAndName(question.c, question.ts, function(err, topic) {
+			if (err)
+				return callback({i: 2, m: '连接错误'});
+			if (topic)
+				return callback({i: 3, m: '该话题已存在，请您手动选择'});
+			dealQuestion(question, callback);
+		});
+	}
+};
+
+var dealQuestion = function(question, callback) {
 	indices_service.returnAndAdd('question', function(err, value) {
 		if(err)
 			return callback({i: 0, m: '连接错误'});
 		question.id = value;
-		console.log(JSON.stringify(question));
 		question_service.addQuestion(question, 'questions', function(err, question) {
 			if (err)
 				return callback({i: 1, m: '连接错误'});
@@ -101,7 +115,9 @@ Question.approve = function(id, callback) {
 				return callback({i: 2, m: '连接错误'});
 			if (amount == 0)
 				return callback({i: 3, m: '删除失败'});
-			question.c = -question.c;
+			//question.c = -question.c;
+			delete question.ts;
+			delete question.m;
 			question_service.addQuestion(question, 'checkedQues', function(err, qe) {
 				if (err)
 					return callback({i: 4, m: '连接错误'});

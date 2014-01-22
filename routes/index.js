@@ -73,6 +73,11 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/question/mylist/unapproved', function(req, res) {
+		//用于查找用户审核没有通过的问题
+		return res.end('正在实现中');
+	});
+
 	app.get('/topic/check', function(req, res) {
 		Topic.getAllUnchecked(function(err, array) {
 			if (err)
@@ -171,6 +176,10 @@ module.exports = function(app) {
 			req.session.user = newuser;
 			return res.end(JSON.stringify({f: 1, m: '注册成功'}));
 		});
+	});
+
+	app.get('/user/session', function(req, res) {
+		return res.end(JSON.stringify(req.session.user));
 	});
 
 	app.post('/admin/topic/add', function(req, res) {

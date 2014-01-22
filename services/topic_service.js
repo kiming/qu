@@ -105,6 +105,18 @@ topic_service.getTopicById = function(id, callback) {
 	});
 };
 
+topic_service.getTopicByCateAndName = function(cateid, name, callback) {
+	db.collection('topics', function(err, collection) {
+		if (err)
+			return callback(err);
+		collection.findOne({c: cateid, n: name}, {_id: 0}, function(err, topic) {
+			if (err)
+				return callback(err);
+			return callback(null, topic);
+		});
+	});
+};
+
 topic_service.getTopicOfSameName = function(cateid, name, callback) {
 	db.collection('topics', function(err, collection) {
 		if (err)

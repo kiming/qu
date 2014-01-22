@@ -37,24 +37,28 @@ $(document).ready(function() {
 	});
 	$('#topic').css('display', 'none');
 	$('#inputmode').click(function() {
-		if (parseInt($('#mode').val())==0) {
-			$('#mode').val(1);
-			$('#inputmode').text('列表选择');
-			$('#topics').css('display', 'inline');
-			$('#topic').css('display', 'none');
-		}
-		else {
-			$('#mode').val(0);
-			$('#inputmode').text('手动输入');
-			$('#topic').css('display', 'inline');
-			$('#topics').css('display', 'none');
-		}
+		setFormMode(parseInt($('#mode').val()));
 	});
 	$('#modal').on('hidden', function () {
 		if (parseInt($('#refresh').val()) == 1)
 			location.reload();
 	});
 });
+
+function setFormMode(mode) {
+	if (mode == 0) {
+		$('#mode').val(1);
+		$('#inputmode').text('列表选择');
+		$('#topics').css('display', 'inline');
+		$('#topic').css('display', 'none');
+	}
+	else {
+		$('#mode').val(0);
+		$('#inputmode').text('手动输入');
+		$('#topic').css('display', 'inline');
+		$('#topics').css('display', 'none');
+	}
+}
 
 function show(str) {
 	$("#modal_msg").html(str);
@@ -77,7 +81,7 @@ function approve(t) {
 		}
 		else if (obj.f == 1) {
 			setRefreshFlag();
-			show(obj.m);
+			show("操作成功！");
 		}
 	});
 };
@@ -96,6 +100,7 @@ function reject(t) {
 };
 
 function allocate(t) {
+	setFormMode(0);
 	$.get('/question/getone?id=' + t, function(result1) {
 		var obj = JSON.parse(result1);
 		if (obj.f == 0)
@@ -162,8 +167,4 @@ function confirm_allocate() {
 var resetTopicSelect = function() {
 	$('#topic').empty();
 	$('#topic').append('<option value="0">请选择</option>');
-};
-
-var change_event = function() {
-
 };

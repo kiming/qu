@@ -63,7 +63,6 @@ Topic.approve = function(id, callback) {
 				});
 			});
 		});
-
 	});
 };
 

@@ -104,6 +104,18 @@ var resetTopicSelect = function() {
 	$('#topic').append('<option value="0">请选择</option>');
 };
 
+var initform = function() {
+	$('#ques').val('');
+	$('#tans').val('');
+	$('#fansa').val('');
+	$('#fansb').val('');
+	$('#fansc').val('');
+	$('#cates1').val(0);
+	resetTopicSelect();
+	$('#topic').val(0);
+	$('#topics').val('');
+};
+
 /*
 		if (obj.f == 0) {
 			$("#modal_msg").html('话题载入未成功，请重试');
