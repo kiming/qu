@@ -19,7 +19,19 @@
         <a href="#" class="btn" data-dismiss="modal" >关闭</a>
       </div>
     </div>
-
+    <div id="confirm" class="modal hide fade">
+      <div class="modal-header">
+        <a class="close" data-dismiss="modal" >&times;</a>
+        <h3>提示</h3>
+      </div>
+      <div class="modal-body">
+        <p id="confirm_msg">您确定要执行删除吗？</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick='confirm_del()'>确定删除</button>
+        <a href="#" class="btn" data-dismiss="modal" >关闭</a>
+      </div>
+    </div>
     <div id="edit" class="modal hide fade">
       <div class="modal-header">
         <a class="close" data-dismiss="modal" >&times;</a>
@@ -79,11 +91,12 @@
             </div>
             <input type='hidden' id='mode' />
             <input type='hidden' id='qid' />
+            <input type='hidden' id='refresh' />
           </fieldset>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" onclick='confirm_allocate()'>保存更新</button>
+        <button class="btn btn-primary" onclick='confirm_edit()'>保存更新</button>
         <a href="#" class="btn" data-dismiss="modal" >关闭</a>
       </div>
     </div>
@@ -117,7 +130,7 @@
               <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-cog icon-white"></i> 操作 <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a onclick="reedit(<%=entry.id %>)"><i class="icon-pencil"></i> 编辑</a></li>
-                <li><a onclick="delete(<%=entry.id%>)"><i class="icon-ban-circle"></i> 删除</a></li>
+                <li><a onclick="deleteQ(<%=entry.id %>)"><i class="icon-ban-circle"></i> 删除</a></li>
               </ul>
             </div>
           </td>

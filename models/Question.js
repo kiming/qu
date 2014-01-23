@@ -162,6 +162,7 @@ Question.getUncheckedQuestionsByUserId = function(uid, callback) {
 var searchTopicNames = function(array, callback) {
 	var todo = [];
 	for (var index in array) {
+		//console.log(array[index].id);
 		if (array[index].m == 0)
 			todo.push(array[index]);
 		else
@@ -170,7 +171,7 @@ var searchTopicNames = function(array, callback) {
 	var length = todo.length - 1, i = 0;
 	todo.forEach(function(entry) {
 		entry.cs = Topic.getCateNameByID(entry.c);
-		Topic.getTopicNameByID(entry.tp, function(err, name) {					
+		Topic.getTopicNameByID(entry.tp, function(err, name) {			
 			if (err)
 				entry.ts = '查询失败';
 			entry.ts = name;
@@ -180,3 +181,43 @@ var searchTopicNames = function(array, callback) {
 	});
 };
 
+Question.editQuestionByUser = function(uid, paras, callback) {
+	//首先检查用户权限
+	question_service.getUncheckedQuestionsByIdAndUserId(uid, parseInt(paras.qid), function(err, entry) {
+		if (err)
+			return callback({i: 10, m: '连接错误'});
+		if (!entry)
+			return callback({i: 11, m: '对不起，您没有权限操作此问题'});
+		var modified = {
+			a: paras.a,
+			c: parseInt(paras.c),
+			m: parseInt(paras.m),
+			q: paras.q,
+			tp: parseInt(paras.tp),
+			ts: paras.ts
+		};
+		question_service.editQuestion(parseInt(paras.qid), modified, function(err, ct) {
+			if (err)
+				return callback({i: 12, m: '连接错误'});
+			if (ct == 0)
+				return callback({i: 13, m: '修改不成功，请重试'});
+			return callback(null, true);
+		});
+	});
+};
+
+Question.deleteQuestionByUser = function(uid, qid, callback) {
+	question_service.getUncheckedQuestionsByIdAndUserId(uid, qid, function(err, entry) {
+		if (err)
+			return callback({i: 10, m: '连接错误'});
+		if (!entry)
+			return callback({i: 11, m: '对不起，您没有权限操作此问题'});
+		question_service.deleteQuestion(qid, 'questions', function(err, ct) {
+			if (err)
+				return callback({i: 12, m: '连接错误'});
+			if (ct == 0)
+				return callback({i: 13, m: '对不起，删除失败，请重试'});
+			return callback(null, true);
+		});
+	});
+};

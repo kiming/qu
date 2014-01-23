@@ -87,6 +87,29 @@ module.exports = function(app) {
 		});
 	});
 
+	app.post('/question/edit', function(req, res) {
+		//return res.end(JSON.stringify(req.body));
+		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
+		if (!req.session.user)
+			return res.end(JSON.stringify({f: 0, e: {i: 0, m: '你没登录'}}));
+		Question.editQuestionByUser(req.session.user.id, req.body, function(err, flag) {
+			if (err)
+				return res.end(JSON.stringify({f: 0, e: err}));
+			return res.end(JSON.stringify({f: 1, m: '您的修改已成功保存'}));
+		});
+	});
+
+	app.get('/question/userdel', function(req, res) {
+		res.setHeader('Content-Type', 'text/JSON;charset=UTF-8');
+		if (!req.session.user)
+			return res.end(JSON.stringify({f: 0, e: {i: 0, m: '你没登录'}}));
+		Question.deleteQuestionByUser(req.session.user.id, parseInt(req.query.qid), function(err, flag) {
+			if (err)
+				return res.end(JSON.stringify({f: 0, e: err}));
+			return res.end(JSON.stringify({f: 1, m: '操作成功！'}));
+		});
+	});
+
 	app.get('/topic/check', function(req, res) {
 		Topic.getAllUnchecked(function(err, array) {
 			if (err)

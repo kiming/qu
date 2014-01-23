@@ -71,7 +71,12 @@ Topic.approve = function(id, callback) {
 						return callback({i: 5, m: '连接错误'});
 					if (count == 0)
 						return callback({i: 6, m: '添加错误'});
-					return callback(null, true);
+					mergetopic2question(topic.c, topic.n, topic.id, function(err, flag) {
+						if (err)
+							return callback(err);
+						return callback(null, true);
+					});
+					//return callback(null, true);//////
 				});
 			});
 		});

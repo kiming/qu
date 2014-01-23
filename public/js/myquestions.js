@@ -23,6 +23,10 @@ $(document).ready(function() {
 	$('#inputmode').click(function() {
 		setFormMode(parseInt($('#mode').val()));
 	});
+	$('#modal').on('hidden', function () {
+		if (parseInt($('#refresh').val()) == 1)
+			location.reload();
+	});
 });
 
 function reedit(qid) {
@@ -39,6 +43,7 @@ function reedit(qid) {
 			$('#fansa').val(anss[1]);
 			$('#fansb').val(anss[2]);
 			$('#fansc').val(anss[3]);
+			$('#qid').val(qid);
 			$.get('/topic/cates', function(data) {
 				var obj2 = JSON.parse(data);
 				for (var i in obj2) {
@@ -54,7 +59,7 @@ function reedit(qid) {
 						$("#modal").modal({
 							backdrop:true,
     						keyboard:true,
-    						show:true
+							show:true
 						});
 					}
 					else if (obj2.f == 1) {
@@ -77,6 +82,59 @@ function reedit(qid) {
 		}
 	});
 };
+
+function deleteQ(qid) {
+	$('#qid').val(qid);
+	$('#confirm').modal({
+		backdrop:true,
+		keyboard:true,
+		show:true
+	});
+};
+
+function confirm_edit() {
+	var a = [
+		$('#tans').val(),
+		$('#fansa').val(),
+		$('#fansb').val(),
+		$('#fansc').val()
+	];
+	$.post('/question/edit', {
+		q: $('#ques').val(),
+		a: a,
+		qid: $('#qid').val(),
+		c: $('#cates1').val(),
+		tp: $('#topic').val(),
+		ts: $('#topics').val(),
+		m: $('#mode').val()
+	}, function(result) {
+		var obj = JSON.parse(result);
+		if (obj.f == 0) {
+			$("#edit").modal('hide');
+			show(obj.e.m);
+		}
+		else if (obj.f == 1) {
+			setRefreshFlag();
+			$("#edit").modal('hide');
+			show(obj.m);
+		}
+	});
+};
+
+function confirm_del() {
+	$.get('/question/userdel?qid=' + $('#qid').val(), function(result) {
+		var obj = JSON.parse(result);
+		$('#confirm').modal('hide');
+		if (obj.f == 0) {
+			show(obj.e.m);
+		}
+		else if (obj.f == 1) {
+			setRefreshFlag();
+			show(obj.m);
+		}
+	});
+};
+
 
 function setFormMode(mode) {
 	if (mode == 0) {
@@ -105,5 +163,9 @@ function show(str) {
 var resetTopicSelect = function() {
 	$('#topic').empty();
 	$('#topic').append('<option value="0">请选择</option>');
+};
+
+function setRefreshFlag() {
+	$('#refresh').val(1);
 };
 
