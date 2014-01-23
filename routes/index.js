@@ -5,7 +5,9 @@ var User = require("../models/User");
 
 module.exports = function(app) {
 	app.get('/', function(req, res) {
-		return res.render('index', {title: 'test'});
+		if (!req.session.user)
+			res.redirect('/user/login');
+		return res.render('index');
 	});
 
 	app.get('/question/upload', function(req, res) {
@@ -240,5 +242,20 @@ module.exports = function(app) {
 			});
 		}
 
+	});
+
+	app.get('/admin/login', function(req, res) {
+		return res.render('adminlogin');
+	});
+
+	app.post('/admin/login', function(req, res) {
+		//硬编码的管理员账号
+		if (req.body.m == 'admin' && req.body.p == 'admin');
+			return res.end(JSON.stringify({f: 1, m: '登录成功！'}));
+		return res.end(JSON.stringify({f: 1, e: {i: 0, m: '对不起，您的账号或密码不匹配'}}));
+	});
+
+	app.get('/admin', function(req, res) {
+		return res.render('adminindex');
 	});
 };

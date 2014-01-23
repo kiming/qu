@@ -1,5 +1,5 @@
 function handin() {
-	$.post('/user/login', {
+	$.post('/admin/login', {
 		m: $('#mail').val(),
 		p: $('#password').val()
 	}, function(result) {
@@ -13,7 +13,7 @@ function handin() {
 	});
 	$('#modal').on('hidden', function() {
 		if (parseInt($('#flag').val()) == 1)
-			location.href='/';
+			location.href='/admin';
 	});
 };
 

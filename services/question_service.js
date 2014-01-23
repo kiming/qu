@@ -61,7 +61,7 @@ question_service.getUncheckedQuestionsByUserId = function(uid, callback) {
 	db.collection('questions', function(err, collection) {
 		if (err)
 			return callback(err);
-		collection.find({u: uid}, {_id: 0}).toArray(function(err, array) {
+		collection.find({u: uid}, {_id: 0}).sort({id: 1}).toArray(function(err, array) {
 			if (err)
 				return callback(err);
 			return callback(null, array);
