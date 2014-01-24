@@ -1,0 +1,42 @@
+数据库中的表：
+indices保存其他各个表中序号用到了多少，初始状态是：
+{ "k" : "user", "v" : 1 }
+{ "k" : "question", "v" : 1 }
+{ "k" : "competition", "v" : 1 }
+{ "k" : "topic", "v" : 1 }
+{ "k" : "utopic", "v" : 1 }
+
+questions表中保存着没有审核通过的问题
+	a: [正确答案,错误答案1，错误答案2，错误答案3]
+	c: 所属分类的编号
+	i: 正确答案的编号
+	id: 该问题的id
+	m: 话题模式  0代表是从列表中选的话题，1代表手动输入的话题
+	q: 问题题面
+	tp: 话题的编号 对应模式0
+	ts: 话题的字符串值 对应模式1
+	u: 提出这个问题的用户
+
+rejectedQues表保存被退回的问题，结构同questions表
+
+checkedQues表保存通过的问题，不过去掉了字段u、ts和m
+
+topics表中保存通过的话题
+	id: 话题编号（和utopics不是一套id)
+	n: 话题内容
+	c: 所属分类编号
+
+utopics表中保存还没有审核的问题较topics表多了字段u，提出的用户
+	
+user表保存了用户的信息
+	id :用户id
+	t  :用户title
+	g  :用户性别1男0女-1未选择
+	b  :用户诞生日
+	a  :about简介
+	cr :用户country
+	pr :用户省份
+	ct :用户城市
+	m  :用户邮箱mailbox
+	p  :用户密码
+	n  :用户昵称
